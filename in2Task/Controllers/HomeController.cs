@@ -37,7 +37,6 @@ namespace in2Task.Controllers
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
-                // Ako korisnik nije prijavljen, preusmjerite ga na stranicu za prijavu
                 return RedirectToAction("Login", "Home");
             }
             var users = LoadUsers(); 
@@ -67,15 +66,21 @@ namespace in2Task.Controllers
                  string.IsNullOrEmpty(user.Password) ||
                  string.IsNullOrEmpty(user.Email))
             {
-                ViewBag.ErrorMessage = "Sva polja moraju biti popunjena."; // Poruka o grešci
+                ViewBag.ErrorMessage = "Sva polja moraju biti popunjena."; 
                 return View(user); 
             }
+            var existingUser = _context.Users.FirstOrDefault(u => u.Username == user.Username);
+            if (existingUser != null)
+            {
+                ViewBag.ErrorMessage = "Korisničko ime je već zauzeto."; 
+                return View(user);
+            }
 
-            
+
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            // Preusmjeri na listu korisnika
+            
             return RedirectToAction("Privacy");
         }
         public IActionResult Delete(int id)
@@ -132,16 +137,15 @@ namespace in2Task.Controllers
                 return RedirectToAction("Privacy", "Home");
             }
 
-            // Prikaz poruke o grešci ako login nije uspio
             ViewBag.ErrorMessage = "Pogrešno korisničko ime ili lozinka";
             return View();
         }
 
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Clear(); // Brisanje sesije
-            return RedirectToAction("Login"); // Povratak na login formu
-        }
+        //public IActionResult Logout()
+        //{
+        //    HttpContext.Session.Clear(); // Brisanje sesije
+        //    return RedirectToAction("Login"); // Povratak na login formu
+        //}
 
         public IActionResult BlogPost() 
         {
@@ -169,33 +173,26 @@ namespace in2Task.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddBlogPost(BlogPost blogPost)
         {
-            // Provjera je li korisnik prijavljen
             int? userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
-                // Ako korisnik nije prijavljen, preusmjerite ga na stranicu za prijavu
                 return RedirectToAction("Login", "Home");
             }
 
-            // Provjera obaveznih polja
             if (string.IsNullOrEmpty(blogPost.Title) || string.IsNullOrEmpty(blogPost.Content))
             {
                 ViewBag.ErrorMessage = "Naslov i sadržaj su obavezni.";
                 return View(blogPost);
             }
 
-            // Postavljanje vremena kreiranja i ažuriranja
             blogPost.CreatedAt = DateTime.Now;
             blogPost.UpdatedAt = DateTime.Now;
 
-            // Povezivanje posta s prijavljenim korisnikom
             blogPost.UserId = userId.Value;
 
-            // Dodavanje posta u bazu podataka
             _context.BlogPosts.Add(blogPost);
             _context.SaveChanges();
 
-            // Preusmjeravanje na stranicu s blog postovima
             return RedirectToAction("BlogPost");
         }
 
@@ -279,8 +276,8 @@ namespace in2Task.Controllers
         {
             // Dohvati sve postove iz baze s povezanim korisnicima i komentarima
             var allPostsInDb = _context.BlogPosts
-                .Include(bp => bp.User)       // Učitaj korisnike
-                .Include(bp => bp.Comments)  // Učitaj komentare
+                .Include(bp => bp.User)       // UVitaj korisnike
+                .Include(bp => bp.Comments)  // -||-
                 .ToList();
 
             
@@ -291,10 +288,8 @@ namespace in2Task.Controllers
                     .ToList();
             }
 
-            // Spremi unos za prikaz u View
             ViewBag.SearchText = search;
 
-            // Vrati filtrirane postove u view
             return View("BlogPost", allPostsInDb);
         }
 
