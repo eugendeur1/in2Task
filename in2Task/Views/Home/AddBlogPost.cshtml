@@ -1,0 +1,15 @@
+﻿@model in2Task.Models.BlogPost
+
+<h1>Dodaj Novi Post</h1>
+<form asp-action="AddBlogPost" method="post">
+    <div>
+        <label for="Title">Naslov:</label>
+        <input type="text" id="Title" name="Title" value="@Model?.Title" />
+    </div>
+    <div>
+        <label for="Content">Sadržaj:</label>
+        <textarea id="Content" name="Content">@Model?.Content</textarea>
+    </div>
+    <button type="submit">Dodaj</button>
+</form>
+

@@ -1,0 +1,22 @@
+﻿@model User
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+<form id="userForm" method="post" action="@Url.Action("AddingNewUser", "Home")">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label for="username">Korisničko ime:</label>
+        <input type="text" id="username" name="Username" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password">Lozinka:</label>
+        <input type="password" id="password" name="Password" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="Email" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success">Dodaj</button>
+</form>

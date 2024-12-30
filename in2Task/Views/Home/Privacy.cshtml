@@ -1,0 +1,56 @@
+﻿@model List<User>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korisnici</title>
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+<body>
+    <h1>Administracija Korisnika</h1>
+
+    <!-- Gumb za dodavanje novog korisnika -->
+    <div class="row mb-5">
+        <div class="col">
+            <a class="btn btn-primary" asp-controller="Home" asp-action="AddingNewUser">Dodaj korisnika</a>
+        </div>
+    </div>
+
+    <!-- Tabela korisnika -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Email</th>
+                <th>Akcija</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Username</td>
+                    <td>@user.Password</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <!-- Gumb za brisanje korisnika -->
+                        <form method="post" asp-controller="Home" asp-action="Delete">
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Obriši</button>
+                        </form>
+                    </td>
+                    <td>
+                        <!-- Gumb za uređivanje korisnika -->
+                        <a class="btn btn-warning btn-sm" asp-controller="Home" asp-action="Edit" asp-route-id="@user.Id">Uredi</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

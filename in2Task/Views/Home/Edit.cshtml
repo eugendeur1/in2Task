@@ -1,0 +1,23 @@
+﻿@model User
+
+<h1>Uredi korisnika</h1>
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label asp-for="Username" class="control-label"></label>
+        <input asp-for="Username" class="form-control" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label"></label>
+        <input asp-for="Password" type="text" class="form-control" /> @* ako zelimo da se password ne vidi u type stavljamo password *@
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" type="email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-success">Spremi</button>
+</form>

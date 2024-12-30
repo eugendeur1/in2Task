@@ -1,0 +1,45 @@
+﻿@model List<in2Task.Models.BlogPost>
+
+<div class="container">
+    <form method="get" action="@Url.Action("Search", "Home")" class="search-bar mb-3">
+        <div class="form-group d-flex">
+            <input type="text"
+                   name="search"
+                   class="form-control"
+                   placeholder="Pretraži naslove postova..."
+                   value="@ViewBag.SearchText" />
+            <button type="submit" class="btn btn-primary ml-2">Pretraži</button>
+        </div>
+    </form>
+    <h1>Postovi</h1>
+    <a href="@Url.Action("AddBlogPost", "Home")" class="btn btn-primary">Dodaj Novi Post</a>
+
+    @foreach (var post in Model)
+    {
+        <div class="post-card">
+            <h2>@post.Title</h2>
+            <p><strong>Autor:</strong> @post.User?.Username | <strong>Datum:</strong> @post.CreatedAt.ToShortDateString()</p>
+            <p>@post.Content</p>
+
+            <div class="post-actions">
+                <a href="@Url.Action("EditBlogPost", "Home", new { id = post.Id })" class="btn btn-warning">Uredi</a>
+
+                <a href="@Url.Action("DeleteConfirmed", "Home", new { id = post.Id })" class="btn btn-danger">Obriši</a>
+            </div>
+
+            <div class="comments">
+                <h3>Komentari</h3>
+                @foreach (var comment in post.Comments)
+                {
+                    <p><strong>@comment.User?.Username:</strong> @comment.Content</p>
+                }
+
+                <form method="post" action="@Url.Action("AddComment", "Home")">
+                    <input type="hidden" name="postId" value="@post.Id" />
+                    <textarea name="content" placeholder="Dodaj komentar..."></textarea>
+                    <button type="submit" class="btn btn-primary">Dodaj</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
